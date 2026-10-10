@@ -17,7 +17,7 @@ It came out of fixing [#27926](https://gitlab.haskell.org/ghc/ghc/-/issues/27926
 ## How agents load it
 
 At startup, an agent sees only the skill's name and its one-paragraph description (about 100
-tokens). It reads `SKILL.md` (about 130 lines) only when a task is about GHC upstream work, not
+tokens). It reads `SKILL.md` (about 140 lines) only when a task is about GHC upstream work, not
 for ordinary Haskell programming. It reads the files in `references/` only for the step it's on.
 The scripts do the repetitive work, so even simple agents follow it reliably:
 
@@ -29,6 +29,42 @@ The scripts do the repetitive work, so even simple agents follow it reliably:
 
 They need `bash`, `git`, `curl` and `python3`; the Nix package brings its own. No token is
 needed.
+
+## Recommended: glab
+
+If you can log in, [glab](https://gitlab.com/gitlab-org/cli), the GitLab CLI, does all of this
+better. Logged in, it reads what the anonymous API refuses:
+- issue and MR discussions (`glab mr view N --comments --unresolved`);
+- labels and milestones (`glab api`);
+- job logs (`glab ci trace`).
+
+It also handles paging and JSON output for you. The skill tells agents to use it whenever
+`glab auth status --hostname gitlab.haskell.org` shows a login, and to fall back to the scripts
+otherwise. The scripts stay useful in two cases: they need no setup at all, and `ghc-mr-ci.py`
+finds a fork MR's pipeline from the MR number alone.
+
+Set it up once:
+
+1. Create a [personal access token](https://gitlab.haskell.org/-/user_settings/personal_access_tokens)
+   with an expiry date.
+   - `read_api` is all the skill needs. With it, an agent can search and read everything, but it
+     can't post, comment or change anything. Choose this if you'd rather not hand an agent write
+     access; it also matches the skill's rule that you publish.
+   - Add `api` only if you want glab itself to create issues or MRs, comment, or retry jobs.
+2. Log in without putting the token in your shell history, and keep it in the OS keyring:
+
+       glab auth login --hostname gitlab.haskell.org --git-protocol ssh --use-keyring --stdin < token.txt
+
+   With `--git-protocol ssh`, git keeps using your SSH key, so a `read_api` token doesn't affect
+   pushing.
+3. Point glab at the right host. Outside a checkout of a gitlab.haskell.org repository,
+   `-R ghc/ghc` otherwise goes to gitlab.com:
+
+       export GITLAB_HOST=gitlab.haskell.org
+
+`glab skills install --global` adds glab's own generic agent skill (to `~/.agents/skills/glab`),
+which complements this one. The skill's recipes are in
+`skills/ghc-contribution/references/glab.md`.
 
 ## Install
 
@@ -76,7 +112,7 @@ directories to it, so garbage collection can't remove the skill.
     skills/ghc-contribution/
       SKILL.md              workflow, ground rules, where things are, quick reference
       references/           one focused file per step, read on demand
-        ai-policy.md  issue.md  commit.md  merge-request.md  ci.md
+        ai-policy.md  issue.md  commit.md  merge-request.md  ci.md  glab.md
         testing.md  gitlab-api.md  example-27926.md  sources.md
       scripts/              ghc-search.sh  ghc-lint-commit.py  ghc-mr-ci.py
     flake.nix, nix/         package, install app, checks, Home Manager module

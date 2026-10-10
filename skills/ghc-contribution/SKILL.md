@@ -48,6 +48,7 @@ automatically. Paths below (`references/`, `scripts/`) are relative to this skil
 | LLM policy | <https://gitlab.haskell.org/ghc/ghc/-/wikis/contributing/AI> |
 | How to contribute a patch | <https://gitlab.haskell.org/ghc/ghc/-/wikis/Contributing-a-Patch> |
 | MR and issue templates | `.gitlab/merge_request_templates/Default.md`, `.gitlab/issue_templates/default.md` |
+| GitLab from the shell | `glab` if `glab auth status --hostname gitlab.haskell.org` shows a login (`references/glab.md`); otherwise this skill's scripts, which need no token |
 | All sources of this skill | `references/sources.md` |
 
 ## Workflow
@@ -64,7 +65,12 @@ Pick 2-4 distinctive terms: fragments of the error message, flag, field, file or
 
     scripts/ghc-search.sh "library-dirs-static" "cannot find -lnuma"
 
-This lists matching issues and MRs, open and closed. Also run
+With `glab` logged in, do the same per term (always set the host; see `references/glab.md`):
+
+    GITLAB_HOST=gitlab.haskell.org glab issue list -R ghc/ghc --all --search "<term>" --per-page 20
+    GITLAB_HOST=gitlab.haskell.org glab mr list -R ghc/ghc --all --search "<term>" --per-page 20
+
+Either way you get the matching issues and MRs, open and closed. Also run
 `git log origin/master --grep='<term>'` for fixes that already landed. If anything matches,
 stop and show the user: commenting on or reviewing the existing work may be the better move.
 
@@ -92,7 +98,9 @@ Use `references/merge-request.md` for the description and the checklist. The tar
 ### 7. Labels, CI, review, landing
 - Only project members can set labels and milestones. Others ask `@triagers` in the text.
 - `lint-changelog` fails until there's a `changelog.d/` entry or the ~"no-changelog" label.
-- CI status: `scripts/ghc-mr-ci.py <MR number>`. To read failures, see `references/ci.md`.
+- CI status: `scripts/ghc-mr-ci.py <MR number>`, or with `glab`,
+  `glab ci get -R <user>/ghc -b <branch> --output json` (a fork MR's pipeline runs in the fork).
+  To read failures, see `references/ci.md`.
 - The human answers reviewers in their own words. Fixup commits are fine during review; squash
   them before landing. Wait at least 24 h after opening, then @triagers assign marge-bot.
 
@@ -121,6 +129,7 @@ minor release. After the merge, cherry-pick to `ghc-X.Y`; see `references/merge-
 - `references/merge-request.md`: MR description and checklist, changelog, review, backports
 - `references/ci.md`: fork pipelines, failures that aren't the patch's fault, CI coverage
 - `references/testing.md`: hadrian layout and pitfalls, Nix and macOS environments
+- `references/glab.md`: the GitLab CLI: read-only token, host pitfall, search, discussions, fork CI
 - `references/gitlab-api.md`: GitLab API recipes that need no token
 - `references/example-27926.md`: a complete worked example
 - `references/sources.md`: where each rule comes from (start here when updating the skill)

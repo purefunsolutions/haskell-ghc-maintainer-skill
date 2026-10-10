@@ -1,5 +1,8 @@
 # gitlab.haskell.org without a token
 
+This is the fallback for when `glab` isn't logged in. With a login, use `references/glab.md`:
+`glab api` also reaches the endpoints below that need a token.
+
 Sources: <https://docs.gitlab.com/api/> (issues, merge requests, pipelines, jobs), and behaviour
 observed on 2026-10-10.
 

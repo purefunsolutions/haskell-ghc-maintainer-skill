@@ -6,7 +6,8 @@ Sources: `.gitlab-ci.yml`, `.gitlab/ci.sh`, `.gitlab/generate-ci/gen_ci.hs`,
 ## Where pipelines run
 
 - An MR from a fork runs its pipeline in the fork project, the MR's `source_project_id`.
-  `scripts/ghc-mr-ci.py <N>` finds it.
+  `scripts/ghc-mr-ci.py <N>` finds it. So does `glab ci get -R <user>/ghc -b <branch> --output json`,
+  but not `glab ci get --merge-request N`.
 - The default MR pipeline is a subset of the jobs. ~"full-ci" runs all of them, and marge-bot
   always runs the full pipeline. Labels such as ~wasm, ~javascript, ~"RISC-V" and ~"LLVM
   backend" add their jobs.

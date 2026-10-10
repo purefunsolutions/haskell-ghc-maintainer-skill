@@ -3,9 +3,11 @@
 # Usage: ghc-search.sh [--open] [--since YYYY-MM-DD] TERM [TERM ...]
 # Prints one line per hit: #N (issue) or !N (MR), state, creation date, title, author.
 # Needs curl and python3; no token. Searches titles and descriptions, all states by default.
+# With glab logged in to gitlab.haskell.org, `glab issue list` and `glab mr list` do more;
+# see references/glab.md.
 set -euo pipefail
 
-usage() { sed -n '3,5p' "${BASH_SOURCE[0]}" | sed 's/^# //'; }
+usage() { sed -n '3,7p' "${BASH_SOURCE[0]}" | sed 's/^# //'; }
 
 api=https://gitlab.haskell.org/api/v4/projects/1
 open=0

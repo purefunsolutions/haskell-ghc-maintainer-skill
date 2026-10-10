@@ -26,6 +26,8 @@ Wiki pages are also available as raw markdown: add `.md` to the URL and fetch it
 | Hadrian's package caching | `hadrian/src/Hadrian/Haskell/Cabal/Parse.hs` (`resolveContextData`) |
 | macOS build preparation | <https://gitlab.haskell.org/ghc/ghc/-/wikis/building/preparation/mac-osx> |
 | GitLab REST API | <https://docs.gitlab.com/api/> |
+| GitLab CLI (glab) | <https://gitlab.com/gitlab-org/cli>, `glab <command> --help` (checked with glab 1.99) |
+| Token scopes (`read_api`, `api`) | <https://docs.gitlab.com/user/profile/personal_access_tokens/> |
 | Agent Skills format | <https://agentskills.io/specification> |
 | Skill directories per agent | <https://github.com/vercel-labs/skills> (README table) |
 
@@ -35,3 +37,6 @@ Observed rather than documented (recheck if something behaves differently):
 - The commit-to-MR API is empty for commits that marge-bot merged.
 - Pipelines for MRs from forks run in the fork project.
 - Fetch failures (`fatal: early EOF`) happen on fork pipelines.
+- glab sends `-R ghc/ghc` to gitlab.com unless `GITLAB_HOST` is set or a full URL is used.
+- `glab ci get --merge-request N` on ghc/ghc doesn't find fork pipelines. `glab search semantic`
+  answers 404 on gitlab.haskell.org.

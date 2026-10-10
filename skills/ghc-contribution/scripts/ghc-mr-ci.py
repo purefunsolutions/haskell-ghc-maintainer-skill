@@ -6,6 +6,9 @@ Usage: ghc-mr-ci.py MR_NUMBER        summary; failed jobs first, with durations 
 
 No token needed. Pipelines of MRs from forks run in the fork project; this finds them.
 Downloads go through curl, because gitlab.haskell.org's bot check lets curl through.
+With glab logged in, `glab ci get -R <user>/ghc -b <branch>` also lists the jobs; see
+references/glab.md. This script still finds a fork MR's pipeline from the MR number alone, and
+caps log downloads.
 """
 import json
 import re
