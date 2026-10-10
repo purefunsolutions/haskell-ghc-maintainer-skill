@@ -77,6 +77,10 @@ global skills directory:
 | Codex, Pi, Cline, Zed, Warp and others | `~/.agents/skills/` |
 | OpenCode | `~/.config/opencode/skills/` |
 
+Codex also reads `~/.codex/skills/` (`$CODEX_HOME/skills/`), but its
+[source](https://github.com/openai/codex/blob/rust-v0.160.1/codex-rs/ext/skills/src/host_roots.rs#L96-L107)
+marks that location deprecated, even though Codex's bundled skill-installer still uses it.
+
 Other agents that support Agent Skills (Gemini CLI, GitHub Copilot, Cursor, Goose and more) have
 their own directories; see the table in [vercel-labs/skills](https://github.com/vercel-labs/skills).
 Linking the same directory there works too.
