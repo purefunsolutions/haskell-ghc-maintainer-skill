@@ -1,0 +1,1 @@
+# GHC maintainer skill
